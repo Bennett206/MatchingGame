@@ -1,0 +1,185 @@
+
+<html>
+<head>
+
+<style>
+
+
+.bg {
+    background: url(https://i.imgur.com/1MrDaS3.png) center center no-repeat;
+    background-size: cover;
+    content: '';
+}
+
+</style>
+
+<title>Memory Game</title>
+</head>
+<body>
+<center>
+</br></br></br>
+
+<img id="tile0" class="bg" onclick="chooseImg(this);"/>
+<img id="tile1" onclick="chooseImg(this);"/>
+<img id="tile2" onclick="chooseImg(this);"/>
+</br>
+<img id="tile3" onclick="chooseImg(this);"/>
+<img id="tile4" onclick="chooseImg(this);"/>
+<img id="tile5" onclick="chooseImg(this);"/>
+
+</br></br></br>
+<input type="button" value="NEW GAME" onClick="randomizePics()"> 
+</br>
+<p id="score"></p>
+
+<p id="lives"></p>
+</center>
+
+<script language="JavaScript">
+
+var snake = "https://i.imgur.com/csskYIa.jpg"; //image links
+var tiger = "https://i.imgur.com/rsvkEFz.jpg";
+var otter = "https://i.imgur.com/9YERIF0.jpg";
+var memoryPics = [snake,snake,otter,otter,tiger,tiger]; //array with 2 of each image
+var lives = 2;
+var score = 0;
+var clicks = null;
+//var totalClicks = 0; Used for array of clicks method
+//var clicks = []; Used for array of clicks method
+
+
+
+function randomizePics(){
+
+	score = 0;
+	lives = 2;
+	clicks = null;
+	shuffle(memoryPics);
+
+	document.getElementById("score").innerHTML = "Score: " + score;
+	document.getElementById("lives").innerHTML = "Lives: " + lives;
+
+	for (i=0; i<=memoryPics.length; i++){ //place the pics to the img src one by one 
+		
+		var img_id = "tile"+i.toString();//HTML img id "tile0-tile5"
+		document.getElementById(img_id).src = memoryPics[i];
+
+		
+		if (memoryPics[i] == snake){ //write values to each img based on their URL
+			document.getElementById(img_id).value = "snake";
+		} else if (memoryPics[i] == tiger){
+			document.getElementById(img_id).value = "tiger";
+		} else {
+			document.getElementById(img_id).value = "otter";
+		}
+
+		console.log(memoryPics[i])
+		console.log(document.getElementById(img_id).value)
+
+	}
+	
+
+}
+
+function match(){
+
+	alert("You found a match!")
+	score = score + 1;
+  clicks = null;
+  document.getElementById("score").innerHTML = "Score: " + score;
+
+}
+
+function noMatch(){
+
+	alert("Wrong!")
+  lives = lives - 1;
+  clicks = null;
+  document.getElementById("lives").innerHTML = "Lives: " + lives;
+
+}
+
+function chooseImg(img){ //click an image, return 
+
+
+		var currentClick = img.value;
+
+    if (clicks == null){
+
+        clicks = currentClick
+
+    } else if (currentClick == clicks){
+        
+        match();
+
+    } else {
+
+    	 noMatch();
+
+    }
+
+		
+	if (currentClick !== clicks && lives == 0){
+				
+				alert("You ran out of lives! Try again.");
+				alert("Reshuffling...")
+        randomizePics();
+
+    }
+
+
+
+		/*var currentClick = e.value; //function used with array of clicks method
+		totalClicks = clicks.push(e.value); //image that you clicked
+		
+		if(clicks[0] == clicks[1] && clicks.length == 2){
+		
+		alert("You found a match!")	
+		score = score + 1;
+		clicks = [];
+
+		} else if (clicks.length == 2){
+
+			alert("Wrong!")
+			clicks = [];
+		}
+		
+
+		
+	
+
+	for(let i = 0; i < clicks.length; i++){
+
+  		console.log(clicks[i]);
+
+	}*/
+	
+	//console.log("you have clicked " + currentClick + " Total Clicks Left: " + totalClicks);
+	//console.log(totalClicks);
+
+
+}
+
+function shuffle(array) { //function to shuffle an array
+  let currentIndex = array.length,  randomIndex;
+
+  // While there remain elements to shuffle.
+  while (currentIndex != 0) {
+
+    // Pick a remaining element.
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
+  }
+  score = 0
+  return array;
+}
+
+
+
+</script>
+</body>
+</html>
