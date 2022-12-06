@@ -4,13 +4,6 @@
 
 <style>
 
-
-.bg {
-    background: url(https://i.imgur.com/1MrDaS3.png) center center no-repeat;
-    background-size: cover;
-    content: '';
-}
-
 </style>
 
 <title>Memory Game</title>
@@ -27,12 +20,18 @@
 <img id="tile4" onclick="chooseImg(this);"/>
 <img id="tile5" onclick="chooseImg(this);"/>
 
-</br></br></br>
+</br></br>
+<p id="whatHappened">Match the pictures by clicking on two of them!</p>
+</br>
 <input type="button" value="NEW GAME" onClick="randomizePics()"> 
 </br>
 <p id="score"></p>
+<b>LIVES:</b>
+<p id="lives">
 
-<p id="lives"></p>
+<img src="https://i.imgur.com/qnQf34b.jpg" id="live1">
+<img src="https://i.imgur.com/qnQf34b.jpg" id="live2">
+</p>
 </center>
 
 <script language="JavaScript">
@@ -40,14 +39,16 @@
 var snake = "https://i.imgur.com/csskYIa.jpg"; //image links
 var tiger = "https://i.imgur.com/rsvkEFz.jpg";
 var otter = "https://i.imgur.com/9YERIF0.jpg";
+var blank = "https://i.imgur.com/1MrDaS3.png";
 var memoryPics = [snake,snake,otter,otter,tiger,tiger]; //array with 2 of each image
 var lives = 2;
 var score = 0;
 var clicks = null;
+
 //var totalClicks = 0; Used for array of clicks method
 //var clicks = []; Used for array of clicks method
 
-
+randomizePics();
 
 function randomizePics(){
 
@@ -55,14 +56,20 @@ function randomizePics(){
 	lives = 2;
 	clicks = null;
 	shuffle(memoryPics);
+  
+
 
 	document.getElementById("score").innerHTML = "Score: " + score;
-	document.getElementById("lives").innerHTML = "Lives: " + lives;
+
+	//document.getElementById("lives").innerHTML = "Lives: " + lives;
 
 	for (i=0; i<=memoryPics.length; i++){ //place the pics to the img src one by one 
 		
 		var img_id = "tile"+i.toString();//HTML img id "tile0-tile5"
 		document.getElementById(img_id).src = memoryPics[i];
+		document.getElementById(img_id).style.visibility = "";
+		document.getElementById("live1").style.visibility = "";
+		document.getElementById("live2").style.visibility = "";
 
 		
 		if (memoryPics[i] == snake){ //write values to each img based on their URL
@@ -81,54 +88,74 @@ function randomizePics(){
 
 }
 
-function match(){
+function match(){ //if the two clicks match, reset the clicks to null, add 1 point to player's score
 
-	alert("You found a match!")
+
+	document.getElementById("whatHappened").innerHTML = "You found a match!"
 	score = score + 1;
   clicks = null;
   document.getElementById("score").innerHTML = "Score: " + score;
+
+  if (score == 3){ //if score is 3 (matches), the player wins.
+  	document.getElementById("whatHappened").innerHTML = "You WON! Click NEW GAME to play again..."
+
+  }
+ 
 
 }
 
 function noMatch(){
 
-	alert("Wrong!")
+	document.getElementById("whatHappened").innerHTML = "Not a match, Try Again!"
   lives = lives - 1;
   clicks = null;
-  document.getElementById("lives").innerHTML = "Lives: " + lives;
+  //document.getElementById("lives").innerHTML = "Lives: " + lives;
 
+  
 }
 
-function chooseImg(img){ //click an image, return 
+function chooseImg(img){ //click an image,  
 
-
+		var hideImg = img.id;
 		var currentClick = img.value;
+		
 
-    if (clicks == null){
+    if (clicks == null){ //check if it's the first or second image click and then check if the two clicks match or not.
 
         clicks = currentClick
+        hide = hideImg;
+        document.getElementById(hide).style.visibility = "hidden";
 
     } else if (currentClick == clicks){
         
-        match();
 
+        document.getElementById(hideImg).style.visibility = "hidden";
+        match();
+				
     } else {
 
-    	 noMatch();
+    	 	document.getElementById(hideImg).style.visibility = "";
+    	 	document.getElementById(hide).style.visibility = "";
+    	 	noMatch();
+    	
+    	 if (lives == 0){ 
 
+  			document.getElementById("live1").style.visibility = "hidden";
+  			document.getElementById("whatHappened").innerHTML = "You LOST! Reshuffling new set of images..."
+  			setTimeout(randomizePics, 250);
+  			
+  		}
+
+  		 if (lives == 1) {
+
+  			document.getElementById("live2").style.visibility = "hidden";
+
+ 			 } 
+
+    	 
     }
 
 		
-	if (currentClick !== clicks && lives == 0){
-				
-				alert("You ran out of lives! Try again.");
-				alert("Reshuffling...")
-        randomizePics();
-
-    }
-
-
-
 		/*var currentClick = e.value; //function used with array of clicks method
 		totalClicks = clicks.push(e.value); //image that you clicked
 		
@@ -177,6 +204,7 @@ function shuffle(array) { //function to shuffle an array
   score = 0
   return array;
 }
+
 
 
 
